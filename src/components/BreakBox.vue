@@ -26,6 +26,17 @@ export default {
 }
 </script>
 <style lang="scss" scoped>
+
+@media screen and (max-width: 992px){
+   
+    .breadcrumb {
+        height: 40px !important;
+        line-height: 40px !important;
+        li{
+            font-size: 16px !important;
+        }
+    }
+}
 .breadcrumb {
     padding-left: 15px;
     white-space: nowrap;
@@ -44,6 +55,9 @@ export default {
         display: inline-block;
         a {
             color: #409EFF;
+            background-image: -webkit-gradient(linear, left 0, right 0, from(rgba(107, 17, 203, 0.714)), to(rgb(65, 88, 208)));
+            -webkit-background-clip: text; /*必需加前缀 -webkit- 才支持这个text值 */
+            -webkit-text-fill-color: transparent; /*text-fill-color会覆盖color所定义的字体颜色： */
         }
     }
 }

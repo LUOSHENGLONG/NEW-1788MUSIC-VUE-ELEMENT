@@ -7,8 +7,8 @@
             <div class="inner">
             <h3><label for="member_email">订阅我们的月刊 (中文)</label></h3>
             <form class="newsletter-form">
-                <input class="newsletter-input"  type="email"  id="member_email"  placeholder="邮件地址">
-                <input class="button newsletter-button"  type="button" value="订阅"  id="member_submit">
+                <input class="newsletter-input" v-model="email"  type="email"  id="member_email"  placeholder="邮件地址">
+                <input class="button newsletter-button" @click="submit()"  type="button" value="订阅"  id="member_submit">
                 
             </form>
             <p ref="emailTips" class="emailTips">
@@ -16,7 +16,7 @@
             </p>
             </div>
             <div class="showcase-examples l-center l-longshadows ">
-            <button @click="showWechat()" class="button button-action button-box button-giant button-longshadow-left">
+            <button @click="goWechat" class="button button-action button-box button-giant button-longshadow-left">
                 <img src="@/assets/svg/wechat.svg" alt="" class="svg">
             </button>
 
@@ -53,8 +53,8 @@
                     <div class="">
                     <h4>关于</h4>
                     <ul class="list-unstyled">
-                        <li><router-link target="_blank" to="/aboutMe">关于我们</router-link></li>
-                        <li><router-link target="_blank" to="/copyright">版权中心</router-link></li>
+                        <li><router-link target="_blank" to="/sundry/aboutme">关于我们</router-link></li>
+                        <li><router-link target="_blank" to="/sundry/copyright">版权中心</router-link></li>
                         <!-- <li><a href="/links/">友情链接</a></li> -->
                         <!-- <li><a href="/hr/">招聘</a></li> -->
                     </ul>
@@ -63,7 +63,7 @@
                     <h4>订阅我们</h4>
                     <ul class="list-unstyled">
                         <li><a target="_blank" href="https://weibo.com/u/6725785449/home">微博</a></li>
-                        <li><router-link to="/help">公众号</router-link></li>
+                        <li><router-link to="/sundry/help">微信</router-link></li>
                         <li><a target="_blank" href="http://space.bilibili.com/380735644?">哔哩哔哩</a></li>
                         <li><a target="_blank" href="https://www.youtube.com/channel/UC-zwZZMXX34hGRanbZ6rMDg">Youtube</a></li>
                         <li><a target="_blank" href="https://www.instagram.com/1788music">Instagram</a></li>
@@ -72,7 +72,7 @@
                     <div class="">
                     <h4>联系方式</h4>
                     <ul class="list-unstyled">
-                        <li><a href="JavaScript: void(0)" @click="showWechat()" target="_blank">微信公众号</a></li>
+                        <li><a href="JavaScript: void(0)" target="_blank">微信公众号</a></li>
                         <!-- <li><a href="#" target="_blank">电话号码</a></li> -->
                         <li><a href="https://weibo.com/u/6725785449" target="_blank">新浪微博</a></li>
                         <li><router-link to="/help">电子邮件</router-link></li>
@@ -82,24 +82,24 @@
                     <h4>快捷导航</h4>
                     <ul class="list-unstyled">
                         <li><router-link to="/" target="_blank">首页</router-link></li>
-                        <li><router-link to="/synthesizer" target="_blank">合成器</router-link></li>
-                        <li><router-link to="/effects" target="_blank">效果器</router-link></li>
-                        <li><router-link to="/samplePack" target="_blank">采样包</router-link></li>
-                        <li><router-link to="/contribute" target="_blank">投稿</router-link></li>
+                        <li><router-link to="/article?type=synthesizer&page_index=1&page_size=10&search=null" target="_blank">合成器</router-link></li>
+                        <li><router-link to="/article?type=effects&page_index=1&page_size=10&search=null" target="_blank">效果器</router-link></li>
+                        <li><router-link to="/article?type=samplePack&page_index=1&page_size=10&search=null" target="_blank">采样包</router-link></li>
+                        <li><router-link to="/contribution" target="_blank">投稿</router-link></li>
                     </ul>
                     </div>
                     <div class="">
                     <h4>赞助</h4>
                     <ul class="list-unstyled">
-                        <li><router-link to="/sponsor" target="_blank">微信</router-link></li>
-                        <li><router-link to="/sponsor" target="_blank">支付宝</router-link></li>
+                        <li><router-link to="/sundry/sponsor" target="_blank">微信</router-link></li>
+                        <li><router-link to="/sundry/sponsor" target="_blank">支付宝</router-link></li>
                     </ul>
                     </div>
                     <div class="">
                     <h4>帮助</h4>
                     <ul class="list-unstyled">
-                        <li><router-link to="/feedback" target="_blank">寻求帮助</router-link></li>
-                        <li><router-link to="/sponsor" target="_blank">发送反馈</router-link></li>
+                        <li><router-link to="/sundry/help" target="_blank">寻求帮助</router-link></li>
+                        <li><router-link to="/sundry/feedback" target="_blank">发送反馈</router-link></li>
                     </ul>
                     </div>
                 </div>
@@ -108,7 +108,7 @@
         <div class="footer-bottom">
             <ul class="list-inline text-center">
                 <li>
-                    <a href="#" target="_blank">1788 MUSIC &nbsp;&nbsp;&nbsp;&nbsp;</a>
+                    <a href="#" target="_blank" style="color:#6b11cb;">1788 MUSIC &nbsp;&nbsp;&nbsp;&nbsp;</a>
                 </li>
                 <li>Copyright © 2018-2019 1788MUSIC</li>
             </ul>
@@ -117,7 +117,28 @@
 </template>
 <script>
 export default {
+    data() {
+        return {
+            email: ''
+        }
+    },
     methods: {
+        goWechat() {
+            this.$router.push({path: '/sundry/help'})
+        },
+        submit() {
+            // 验证邮箱
+            const reg = /^[A-Za-z\d]+([-_.][A-Za-z\d]+)*@([A-Za-z\d]+[-.])+[A-Za-z\d]{2,4}$/; 
+            if( reg.test(this.email) ) {
+                this.$axios.post('/api/home/subscription',{email: this.email})
+            } else {
+                this.$message({
+                    type: 'error',
+                    message: '订阅邮箱格式错误'
+                })
+            }
+            console.log(this.email)
+        },
         goWeibo() {
             window.open("https://weibo.com/u/6725785449")
         },
@@ -193,16 +214,38 @@ export default {
         transition: all 0.3s ease;
     }
 }
-@media screen and (max-width: 1200px) {
+@media screen and (max-width: 1200px) and (min-width: 992px){
    .footer-top {
         padding: 0 1% !important;
         transition: all 0.3s ease;
     }
     
 }
+@media screen and (max-width: 992px) {
+   .footer-top {
+        padding: 0 !important;
+        transition: all 0.3s ease;
+    }
+    .right-div {
+        padding: 0 1% !important;
+    }
+    // .footer-top .right-div .about{
+    //     display: block !important;
+    // }
+    h4 {
+        font-size: 14px !important;
+    }
+    .about {
+        li {
+            a {
+                font-size: 12px !important;
+            }
+        }
+    }
+}
 .nav-bottom {
     margin-top: 80px;
-    min-width: 992px;
+    // min-width: 992px;
     border-top: 1px solid #ebeef5;
     padding-top: 40px;
 }
@@ -232,13 +275,18 @@ export default {
     border-radius: 50px;
     position: absolute;
     padding: 0 26px;
-    background-color: #4fc08d;
+    background-color: #409EFF;
+    background: linear-gradient(111deg, #409EFF, rgb(64, 77, 255));
     color: #fff;
     margin: 0;
     height: calc(100% - 8px);
     right: 4px;
     top: 4px;
     cursor: pointer;
+}
+#news .newsletter-button.button:hover {
+    background: linear-gradient(222deg, rgba(64, 160, 255, 0.863), rgba(64, 77, 255, 0.842));
+    transition: all .3s ease;
 }
 
 .favicon {
@@ -285,14 +333,15 @@ export default {
 }
 
 .footer-top {
-    display: flex;
+    display: block;
     margin-bottom: 40px;
     padding: 0 10%;
     .left-div {
-        flex: 3;
+        text-align: center;
+        margin: 0 50px 50px; 
     }
     .right-div {
-        flex: 3;
+        padding: 0 20%;
         .about {
             display: flex;
             div {

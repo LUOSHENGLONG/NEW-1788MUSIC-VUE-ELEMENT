@@ -1,0 +1,3 @@
+INSERT INTO `images` VALUES ('9b1b4dde-0ffd-445c-9547-3f918c9309b7', '/images/1530185287_8ebei.jpg', 'ad', '1554202895134');
+INSERT INTO `images` VALUES ('a0d81ecb-96bf-4958-b5d2-a3abadd792bc', '/images/1518215050_florian.jpg', 'swiper', '1554201235734');
+INSERT INTO `images` VALUES ('ad8ced9c-12d3-4a28-8568-ffcb6119487d', '/images/1518222782_sgtlzr_1000x1000-min.jpg', 'swiper', '1554202898074');

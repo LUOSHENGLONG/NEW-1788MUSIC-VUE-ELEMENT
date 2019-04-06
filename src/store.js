@@ -74,7 +74,8 @@ const actions = {
     clearCurrentState: ({ commit }) => {
         commit(types.SET_IS_AUTHENTICATED, false)
         commit(types.SET_USER, null)
-    }
+    },
+    
 }
 export default new Vuex.Store({
     state,

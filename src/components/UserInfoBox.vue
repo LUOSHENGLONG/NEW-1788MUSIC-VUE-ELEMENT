@@ -3,7 +3,7 @@
         
         <div class="box-card">
             <div class="clearfix header">
-                <h3>用户名</h3>
+                <h3>昵称</h3>
             </div>
             <div class="line"></div>
             <div class="content">
@@ -57,17 +57,67 @@
         <div class="box-card">
             <div class="clearfix header">
                 <h3>密保设置</h3>
-                
             </div>
             <div class="line"></div>
             <div class="content">
                 <div class="description">
                     <div  class="description-content">
-                        <p style="margin: 17px 0;">未设置</p>
+                        <p style="margin: 17px 0;">{{ isSettingProtect == 0 ? '未设置' : '已设置' }}</p>
                         <div>
-                            <el-button style="padding:0;" type="text">
+                            <!-- <el-button style="padding:0;" type="text">
                                 <span style="color:#409EFF">设置</span>
-                            </el-button>
+                            </el-button> -->
+                            <el-button type="text" @click="dialogFormVisible = true" style="padding: 0;">{{ isSettingProtect == 0 ? '设置' : '修改' }}</el-button>
+                            <el-dialog width="480px" :title="isSettingProtect == 0 ? '密保设置' : '密保验证'" :visible.sync="dialogFormVisible" >
+                            
+                            <el-dialog
+                                width="480px"
+                                title="设置新的密保"
+                                center
+                                :visible.sync="innerVisible"
+                                append-to-body>
+
+                                <el-form :model="protect" ref="protectData" style="width: 90%;">
+                                <el-form-item label="密保问题" :label-width="'100px'">
+                                <el-select v-model="protect.question" placeholder="请选择密保问题" style="width: 100%;">
+                                    <el-option :label="item.question" :value="item.id"  v-for="item in protectQuestion" :key="item.id"></el-option>
+                                    
+                                </el-select>
+                                </el-form-item>
+
+                                <el-form-item label="密保答案" :label-width="'100px'">
+                                <el-input v-model="protect.answer" autocomplete="off"></el-input>
+                                </el-form-item>
+                                
+                                <el-form-item label="" :label-width="'100px'" style="margin:0;margin-top: 60px;">
+                                    
+                                    <el-button type="primary" @click="updataProtect" style="float: right;">更新密保</el-button>
+                                    <el-button @click="innerVisible = false" style="float: right;margin-right: 10px;">取 消</el-button>
+                                </el-form-item>
+
+                            </el-form>
+                            </el-dialog>
+                            
+                            <el-form :model="protect" ref="protectData" style="width: 90%;">
+                                <el-form-item label="密保问题" :label-width="'100px'">
+                                <el-select v-model="protect.question" placeholder="请选择密保问题" style="width: 100%;">
+                                    <el-option :label="item.question" :value="item.id"  v-for="item in protectQuestion" :key="item.id"></el-option>
+                                    
+                                </el-select>
+                                </el-form-item>
+
+                                <el-form-item label="密保答案" :label-width="'100px'">
+                                <el-input v-model="protect.answer" autocomplete="off"></el-input>
+                                </el-form-item>
+                                
+                            </el-form>
+
+                            <div slot="footer" class="dialog-footer"  style="width: 90%;">
+                                <el-button @click="dialogFormVisible = false">取 消</el-button>
+                                <el-button type="primary" v-if="isSettingProtect==0" @click="settingProtect">确 定</el-button>
+                                <el-button type="primary" v-if="isSettingProtect==1" @click="verifyProtect">验证密保</el-button>
+                            </div>
+                            </el-dialog>
                         </div>
                     </div>
                 </div>
@@ -98,20 +148,14 @@
 
         <div class="box-card">
             <div class="clearfix header">
-                <h3>
-                    注册时间
-                    
-                </h3>
-                
+                <h3>注册时间</h3>
             </div>
             <div class="line"></div>
-
             <div class="content">
-                
                 <div class="description">
                     <div class="description">
                         <div  class="description-content">
-                            <p style="margin: 17px 0;">{{user.createTime}}</p>
+                            <p style="margin: 17px 0;">{{ user.createTime | dateFormat }}</p>
                             <div>
                                 <el-button style="padding:0;" type="text" disabled>
                                     <span style="color:#bbb">不可修改</span>
@@ -159,28 +203,201 @@
 <script>
 
 import jwt_decode from 'jwt-decode'
+import moment from 'moment'
 
 export default {
     
     data() {
+        
+
         return {
             labelPosition: 'left',
+            
             formLabelAlign: {
                 name: '',
                 region: '',
                 type: ''
             },
-            user: this.$store.state.user,
             userInfo: {
                 nickname: '',
                 avatar: '',
 
             },
-            showNickNameInput: false
+            showNickNameInput: false,
+            oldTime: 0,
+            dialogFormVisible: false,
+            innerVisible: false,
+            form: {
+                name: '',
+                region: '',
+                date1: '',
+                date2: '',
+                delivery: false,
+                type: [],
+                resource: '',
+                desc: ''
+            },
+            protect: {
+                question: '',
+                answer: ''
+            },
+            isSettingProtect: 0,
+            protectQuestion: []
 
         }
     },
+    mounted() {
+        this.getProtect()
+        this.getProtectQuestion()
+    },
+    computed: {
+        user() {
+            return this.$store.state.user
+        }
+    },
     methods: {
+        updataProtect() {
+            if( this.protect.question == "") {
+                this.$message.error('请选择新的密保问题进行修改')
+                return
+            }
+            if( this.protect.answer == "") {
+                this.$message.error('请输入新的密保答案进行修改')
+                return
+            }
+
+            this.$axios.post('/api/protect/updataProtect',
+                {
+                    email: this.$store.state.user.email,
+                    question: this.protect.question,
+                    answer: this.protect.answer,
+                })
+                .then(result => {
+                    const { code, msg ,data } = result.data
+                    if( code === 0 ) {
+                        this.$message.error(msg)
+                        return
+                    }
+
+                    if( code === 1 ) {
+                        this.protect.question = ''
+                        this.protect.answer = ''
+                        this.$notify({
+                            type: 'success',
+                            title: msg
+                        })
+                        this.protect.question = ''
+                        this.protect.answer = ''
+                        this.innerVisible = false
+                        this.dialogFormVisible = false
+                        return
+                    }
+                })
+        },
+        verifyProtect() {
+            if( this.protect.question == "") {
+                this.$message.error('请选择密保问题进行验证')
+                return
+            }
+            if( this.protect.answer == "") {
+                this.$message.error('请输入密保答案进行验证')
+                return
+            }
+
+            this.$axios.post('/api/protect/verifyProtect',
+                {
+                    email: this.$store.state.user.email,
+                    question: this.protect.question,
+                    answer: this.protect.answer,
+                })
+                .then(result => {
+                    const { code, msg ,data } = result.data
+                    if( code === 0 ) {
+                        this.$message.error(msg)
+                        return
+                    }
+
+                    if( code === 1 ) {
+                        this.protect.question = ''
+                        this.protect.answer = ''
+                        this.$message({
+                            type: 'success',
+                            message: msg
+                        })
+                        this.innerVisible = true
+                        this.dialogFormVisible = false
+                        return
+                    }
+                })
+        },
+        settingProtect() {
+            
+            if( this.protect.question == "") {
+                this.$message.error('请选择密保问题')
+                return
+            }
+            if( this.protect.answer == "") {
+                this.$message.error('请输入密保答案')
+                return
+            }
+
+            this.$axios.post('/api/protect/settingProtect',
+                {
+                    email: this.$store.state.user.email,
+                    question: this.protect.question,
+                    answer: this.protect.answer,
+                })
+                .then(result => {
+                    const { code, msg ,data } = result.data
+                    if( code === 0 ) {
+                        this.$message.error(msg)
+                        return
+                    }
+
+                    if( code === 1 ) {
+                        this.getProtect()
+                        this.dialogFormVisible = false
+                        this.$message({
+                            type: 'success',
+                            message: msg
+                        })
+                        this.protect.question = ''
+                        this.protect.answer = ''
+                        return
+                    }
+                })
+        },
+        getProtectQuestion() {
+            this.$axios.post("/api/protect/getQuestion")
+                .then( result => {
+                    const { code, msg ,data } = result.data
+                    if( code === 0 ) {
+                        this.$message.error(msg)
+                        return
+                    }
+
+                    if( code === 1 ) {
+                        this.protectQuestion = data
+                        
+                        return
+                    }
+                })
+        },
+        getProtect() {
+            this.$axios.post('/api/protect/getProtect',{email: this.$store.state.user.email})
+                .then( result => {
+                    const { code, msg ,data } = result.data
+                    if( code === 0 ) {
+                        this.$message.error(msg)
+                        return
+                    }
+
+                    if( code === 1 ) {
+                        this.isSettingProtect = parseInt(data.count)
+                        return
+                    }
+                })
+        },
         showNickName() {
             this.showNickNameInput = true
         },
@@ -189,6 +406,22 @@ export default {
         },
         submitNickname() {
             let nickname = this.userInfo.nickname
+
+            // 禁止连续点击收藏
+            let newTime = new Date().getTime()
+            if( this.oldTime != 0 ) {
+                if( parseInt(newTime) - parseInt(this.oldTime) < 5000) {
+                    this.$message({
+                        type: 'warning',
+                        message: '点击操作频率过快'
+                    })
+                    return
+                } else {
+                    this.oldTime = parseInt(newTime)
+                }               
+            } else {
+                this.oldTime = parseInt(newTime)
+            }
 
             // 如果存在空格则替换
             String.prototype.replaceAll = function(s1,s2){ 
@@ -245,13 +478,14 @@ export default {
                     // 修改成功 重新获取token
                     const token = data
                     sessionStorage.setItem('token', token)
+                    localStorage.setItem('token', token)
 
                     const decode = jwt_decode(token)
-                    console.log(decode)
                     // 存储数据
                     this.$store.dispatch("setIsAuthenticated", !this.isEmpty(decode))
                     this.$store.dispatch("setUser", decode)
-                    this.$router.go(0)
+                    // this.$router.go(0)
+                    this.closeNickName()
                     this.$message({
                         type: 'success',
                         message: msg
@@ -269,11 +503,37 @@ export default {
                 (typeof value === "string" && value.trim().length === 0)
             );
         },
+    },
+    filters: {
+        dateFormat: dataStr => {
+            dataStr = parseInt(dataStr)
+            moment.locale('zh-cn') //设置中文显示
+            return moment(dataStr).format('YYYY-MM-DD HH:mm:ss');
+        },
     }
 }
 </script>
 
 <style lang="scss" scoped>
+
+@media screen and (max-width: 992px) {
+   .content {
+        padding: 0 1% !important;
+        margin-top: 0px !important;
+        transition: all 0.3s ease;
+    }
+    .box-card {
+        width: 98% !important;
+    }
+    .user-info-box {
+        padding: 0 !important;
+        padding-left: 12% !important;
+    }
+    
+    
+}
+
+
 .user-info-box {
     padding: 0 5%;
 }
@@ -321,9 +581,10 @@ export default {
     .description {
         flex: 4;
         font-size: 16px;
+        height: 115px;
         color: #444;
         overflow: hidden;
-        display: -webkit-box;
+        display: block;
         -webkit-line-clamp: 3;
         -webkit-box-orient: vertical;
         .description-content {

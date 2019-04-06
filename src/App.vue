@@ -1,6 +1,7 @@
 <template>
     <div id="app" ref="app">
         <router-view/>
+        <vue-progress-bar></vue-progress-bar>
     </div>
 </template>
 
@@ -21,19 +22,23 @@ export default {
     },
     created() {
         
-        if ( sessionStorage.token ) {
-            const decode = jwt_decode(sessionStorage.token)
-            // 存储数据
-            this.$store.dispatch("setIsAuthenticated", !this.isEmpty(decode))
-            this.$store.dispatch("setUser", decode)
-            return
-        }
-        if ( localStorage.token ) {
-            const decode = jwt_decode(localStorage.token)
-            // 存储数据
-            this.$store.dispatch("setIsAuthenticated", !this.isEmpty(decode))
-            this.$store.dispatch("setUser", decode)
-        }
+        // if ( sessionStorage.token ) {
+        //     const decode = jwt_decode(sessionStorage.token)
+        //     // 存储数据
+        //     this.$store.dispatch("setIsAuthenticated", !this.isEmpty(decode))
+        //     this.$store.dispatch("setUser", decode)
+        //     return
+        // }
+        // if ( localStorage.token ) {
+        //     const decode = jwt_decode(localStorage.token)
+        //     // 存储数据
+        //     this.$store.dispatch("setIsAuthenticated", !this.isEmpty(decode))
+        //     this.$store.dispatch("setUser", decode)
+        // }
+        this.isLogin()
+    },
+    mounted() {
+        
     },
     methods: {
         isEmpty(value) {
@@ -43,6 +48,28 @@ export default {
                 (typeof value === "object" && Object.keys(value).length === 0) ||
                 (typeof value === "string" && value.trim().length === 0)
             );
+        },
+        isLogin() {
+            if(!localStorage.token) return;
+            this.$axios.post('/api/users/isLogin',{token:localStorage.token})
+                .then(result => {
+                    // console.log(result)
+                    const { code, msg, data } = result.data
+
+                    // 未登录
+                    if ( code === 0 ) {
+                        if(localStorage.token) localStorage.removeItem('token');
+                        return
+                    }
+                    // 已登录 解析token
+                    if ( code === 1 ) {
+                        const decode = jwt_decode(localStorage.token)
+                        // console.log(decode)
+                        // 存储数据
+                        this.$store.dispatch("setIsAuthenticated", !this.isEmpty(decode))
+                        this.$store.dispatch("setUser", decode)
+                    }
+                })
         }
     }
 }
@@ -50,7 +77,7 @@ export default {
 
 <style>
 
-body, textarea, input, select, section,span {
+body, textarea, input, select, section {
     color: rgb(68, 68, 68);
     font-size: 14px;
     line-height: 1.8;

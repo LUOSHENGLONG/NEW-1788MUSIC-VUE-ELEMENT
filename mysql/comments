@@ -1,0 +1,9 @@
+INSERT INTO `comments` VALUES ('31cb97dc-b4b3-4b04-9d59-37506cb5c01c', '9492ec90-2cc3-4f63-86d6-2da1d1920a01', 0, '十多个公司等十多个', '4342f60c-7c75-4e97-bbfb-40f6ac25bce0', '1554102738552', 0);
+INSERT INTO `comments` VALUES ('492dcd41-515e-46f5-9e55-62f3c62ca738', '233176e7-422a-4438-b8d7-e10ef6d384a4', 0, 'afsafs', '4342f60c-7c75-4e97-bbfb-40f6ac25bce0', '1554102685292', 0);
+INSERT INTO `comments` VALUES ('4f8ce889-5e13-482d-af94-41dc428418f7', '4a7f9e77-a737-4724-a4bd-a156eb57d8b5', 0, 'asfasfas', '4342f60c-7c75-4e97-bbfb-40f6ac25bce0', '1554102461425', 0);
+INSERT INTO `comments` VALUES ('5db0df16-eb18-453c-b64a-da4004392fbf', '0dbbbc36-2def-4d95-a5e0-f8f8f6f295ff', 0, '挨个发送', '4342f60c-7c75-4e97-bbfb-40f6ac25bce0', '1554102693221', 0);
+INSERT INTO `comments` VALUES ('60e2cce0-e687-431c-9c24-da355a248060', '1c6574a1-9fa8-4a7d-9090-52f034989548', 0, '十大歌手工地上打工', '4342f60c-7c75-4e97-bbfb-40f6ac25bce0', '1554102715385', 0);
+INSERT INTO `comments` VALUES ('948b082b-6fae-4c08-863e-42a3206cbbed', '233176e7-422a-4438-b8d7-e10ef6d384a4', 0, 'asfasf', '4342f60c-7c75-4e97-bbfb-40f6ac25bce0', '1554102499553', 0);
+INSERT INTO `comments` VALUES ('a9f43219-d765-44ab-9f07-f45c7dd2138d', '9492ec90-2cc3-4f63-86d6-2da1d1920a01', 0, '啊发发', '4342f60c-7c75-4e97-bbfb-40f6ac25bce0', '1554102707382', 0);
+INSERT INTO `comments` VALUES ('c6aecee7-c0af-459b-9e4c-e804b14a12cf', '80325079-11d9-4aaf-8d9d-7a979ec2e437', 0, 'saffasf', 'dde3e65a-6449-486c-8501-77aa41000b5e', '1554383598376', 0);
+INSERT INTO `comments` VALUES ('dc7db4e0-76ad-498e-8a3d-b49168740b00', '0dbbbc36-2def-4d95-a5e0-f8f8f6f295ff', 0, '沙发沙发', '4342f60c-7c75-4e97-bbfb-40f6ac25bce0', '1554102679785', 0);

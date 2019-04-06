@@ -5,17 +5,18 @@
                 <div class="box-card">
                     <div class="clearfix header">
                         <a href="#" class="type" :style="item.type | colorFormat">{{ item.type | typeFormat }}</a>
-                        <router-link to="">
+                        <router-link :to="'/articleInfo/' + item.id">
                             <h3>
                                 {{ item.title }}
                             </h3>
                         </router-link>
+                        <i class="el-icon-star-on" title="取消收藏" v-if="favorite" @click="unlike(item.id)"></i>
                     </div>
                     <div class="line"></div>
 
                     <router-link :to="'/articleInfo/' + item.id" target="_blank">
-                        <div class="content">
-                            <div class="img">
+                        <div class="content hidden-xs-only">
+                            <div class="img hidden-sm-and-down">
                                 <img v-lazy="'http://localhost:3006'+item.img" alt="" class="">
                             </div>
                             <div class="description">
@@ -54,10 +55,13 @@ import moment from 'moment'
 export default {
     props: {
         articleData: Array,
-        isOk: Boolean
+        isOk: Boolean,
+        favorite: Boolean
     },
     methods: {
-        
+        unlike(id) {
+            this.$emit('cancelFavorite', id)
+        }
     },
     filters: {
         typeFormat: dataStr => {
@@ -84,23 +88,23 @@ export default {
 
         colorFormat: dataStr => {
             if(dataStr === "synthesizer"){
-                return "background: #663a9e"
+                return "background: -webkit-linear-gradient(left, #FC466B ,#3F5EFB);background: -o-linear-gradient(right, #FC466B, #3F5EFB);background: -moz-linear-gradient(right, #FC466B, #3F5EFB);background: linear-gradient(to right, #FC466B ,#3F5EFB);"
             }else if( dataStr === "effects") {
-                return "background: #CC3366"
+                return "background: -webkit-linear-gradient(left, #4e54c8 ,#8f94fb);background: -o-linear-gradient(right, #4e54c8, #8f94fb);background: -moz-linear-gradient(right, #4e54c8, #8f94fb);background: linear-gradient(to right, #4e54c8 ,#8f94fb);"
             }else if( dataStr === "samplePack") {
-                return "background: #03A9F4"
+                return "background: -webkit-linear-gradient(left, #8E2DE2 ,#8CA6DB);background: -o-linear-gradient(right, #8E2DE2, #8CA6DB);background: -moz-linear-gradient(right, #8E2DE2, #8CA6DB);background: linear-gradient(to right, #8E2DE2 ,#8CA6DB);"
             }else if( dataStr === "host") {
-                return "background: #3366FF"
+                return "background: -webkit-linear-gradient(left, #636FA4 ,#6A82FB);background: -o-linear-gradient(right, #636FA4, #6A82FB);background: -moz-linear-gradient(right, #636FA4, #6A82FB);background: linear-gradient(to right, #636FA4 ,#6A82FB);"
             }else if( dataStr === "tutorial") {
-                return "background: #9708cc"
+                return "background: -webkit-linear-gradient(left, #6441A5 ,#9D50BB);background: -o-linear-gradient(right, #6441A5, #9D50BB);background: -moz-linear-gradient(right, #6441A5, #9D50BB);background: linear-gradient(to right, #6441A5 ,#9D50BB);"
             }else if( dataStr === "project") {
-                return "background: #9452a5"
+                return "background: -webkit-linear-gradient(left, #6b11cbb6 ,#2575fc);background: -o-linear-gradient(right, #6b11cbb6, #2575fc);background: -moz-linear-gradient(right, #6b11cbb6, #2575fc);background: linear-gradient(to right, #6b11cbb6 ,#2575fc);"
             }else if( dataStr === "kontakt") {
-                return "background: #CC0033"
+                return "background: -webkit-linear-gradient(left, #a8c0ff ,#3f2b96);background: -o-linear-gradient(right, #a8c0ff, #3f2b96);background: -moz-linear-gradient(right, #a8c0ff, #3f2b96);background: linear-gradient(to right, #a8c0ff ,#3f2b96);"
             }else if( dataStr === "preset") {
-                return "background: #9452a5"
+                return "background: -webkit-linear-gradient(left, #FBD3E9 ,#BB377D);background: -o-linear-gradient(right, #FBD3E9, #BB377D);background: -moz-linear-gradient(right, #FBD3E9, #BB377D);background: linear-gradient(to right, #FBD3E9 ,#BB377D);"
             }else if( dataStr === "midi") {
-                return "background: #CC0033"
+                return "background: -webkit-linear-gradient(left, #a8c0ff ,#3f2b96);background: -o-linear-gradient(right, #a8c0ff, #3f2b96);background: -moz-linear-gradient(right, #a8c0ff, #3f2b96);background: linear-gradient(to right, #a8c0ff ,#3f2b96);"
             }
         },
 
@@ -120,7 +124,29 @@ export default {
 }
 </script>
 <style lang="scss" scoped>
+@media screen and (max-width: 992px) {
+    .card-div {
+        margin-bottom: 0 !important;
+    }
+    .box-card {
+        border: 0 !important;
+        box-shadow: none !important;
+    }
+    .box-card:first-child {
+        border-top: 1px solid #ebeef5 !important;
+    }
+    h3{
+        font-size: 18px !important;
+    }
+    .type {
+        font-size: 14px !important;
+        margin-top: 5px !important;
+        padding: 0 6px !important;
+        border-radius: 4px !important;
 
+    }
+    
+}
 .box-card {
     border-radius: 4px;
     border: 1px solid #ebeef5;
@@ -157,7 +183,7 @@ font-size: 14px;
 }
 
 .item {
-margin-bottom: 18px;
+    margin-bottom: 18px;
 }
 
 .clearfix:before,
@@ -197,13 +223,17 @@ clear: both
         color: #444;
         overflow: hidden;
         display: -webkit-box;
-        -webkit-line-clamp: 3;
+        -webkit-line-clamp: 4;
         -webkit-box-orient: vertical;
+        position: relative;
         .description-content {
+            position: absolute;
+            top: 30px;
             margin: 0;
             margin-top: 5px;
         }
         .info {
+            position: absolute;
             margin: 0;
             height: 28px;
             ul{
@@ -224,6 +254,7 @@ clear: both
                     }
                     span {
                         margin-right: 20px;
+                        font-size: 15px;
                     }
                 }
             }
@@ -234,6 +265,7 @@ h3{
     margin:  0;
     font-size: 22px;
     color: #444555;
+    
 }
 .card-div {
     margin-bottom: 20px;
@@ -253,5 +285,16 @@ h3{
             transition: all .3s ease;
         }
     }
+}
+.el-icon-star-on {
+    position: absolute;
+    right: 1%;
+    top: 4%;
+    font-size: 36px;
+    color: #40a0ffdd;
+    cursor: pointer;
+    background-image: -webkit-gradient(linear, left 0, right 0, from(rgba(139, 10, 128, 0.74)), to(rgb(65, 88, 208)));
+    -webkit-background-clip: text; /*必需加前缀 -webkit- 才支持这个text值 */
+    -webkit-text-fill-color: transparent; /*text-fill-color会覆盖color所定义的字体颜色： */
 }
 </style>

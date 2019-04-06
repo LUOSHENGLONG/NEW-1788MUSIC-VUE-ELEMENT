@@ -36,9 +36,13 @@
 </script>
 <style lang="scss" scoped>
     .pagination-box {
+        width: 100% !important;
         text-align: center;
         .block {
             text-align: center;
         }
+    }
+    .el-pagination {
+        white-space: inherit !important;
     }
 </style>

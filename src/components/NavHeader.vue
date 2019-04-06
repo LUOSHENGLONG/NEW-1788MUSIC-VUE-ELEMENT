@@ -1,32 +1,32 @@
 <template>
   <div class="nav-header" style="" v-show="show">
     <el-container>
-        <el-menu :default-active="activeIndex" 
-        class="el-menu-demo" mode="horizontal" @select="handleSelect" router>
-            <el-menu-item index="/" style="padding: 0;width:180px;border:none">
+        <el-menu 
+        class="el-menu-demo" mode="horizontal" @select="handleSelect">
+            <el-menu-item index="/" style="padding: 0;width:100px;border:none" @click="goHome">
                 <img src="@/assets/images/logo.png" alt="" title="首页" class="logo">
             </el-menu-item>
 
-            <el-menu-item index="/article?type=last&page_index=1&page_size=10&search=null" class="hidden-sm-and-down">首页</el-menu-item>
-            <el-menu-item index="/articleInfo/2" class="hidden-sm-and-down">首页</el-menu-item>
+            <el-menu-item index="1" class="hidden-sm-and-down" @click="goHome">首页</el-menu-item>
+            
+            <el-menu-item index="2" @click="goPage('last')" class="hidden-sm-and-down">最新</el-menu-item>
 
-            <el-submenu index="2" class="hidden-sm-and-down">
-                <template slot="title">音乐类型</template>
-                <el-menu-item index="2-1">选项1</el-menu-item>
-                <el-menu-item index="2-2">选项2</el-menu-item>
-                <el-menu-item index="2-3">选项3</el-menu-item>
-            </el-submenu>
-
-            <el-submenu index="3" style="text-align:center"  class="hidden-sm-and-down">
+            <el-submenu index="4" style="text-align:center">
                 <template slot="title">资源类型</template>
-                <el-menu-item index="3-1">选项1</el-menu-item>
-                <el-menu-item index="3-2">选项2</el-menu-item>
-                <el-menu-item index="3-3">选项3</el-menu-item>
+                <el-menu-item index="4-1" @click="goPage('synthesizer')">合成器</el-menu-item>
+                <el-menu-item index="4-2" @click="goPage('effects')">效果器</el-menu-item>
+                <el-menu-item index="4-3" @click="goPage('samplePack')">采样包</el-menu-item>
+                <el-menu-item index="4-4" @click="goPage('host')">宿主</el-menu-item>
+                <el-menu-item index="4-5" @click="goPage('tutorial')">教程</el-menu-item>
+                <el-menu-item index="4-6" @click="goPage('kontakt')">Kontakt</el-menu-item>
+                <el-menu-item index="4-7" @click="goPage('project')">工程</el-menu-item>
+                <el-menu-item index="4-8" @click="goPage('preset')">预置</el-menu-item>
+                <el-menu-item index="4-9" @click="goPage('midi')">MIDI</el-menu-item>
             </el-submenu>
             
-            <el-menu-item index="" style="float:right;padding-right:0;" @click="isRegisterShow = true" v-if="!isAuthenticated">注册</el-menu-item>
+            <el-menu-item index="5" style="float:right;padding:0 2px;" @click="isRegisterShow = true" v-if="!isAuthenticated">注册</el-menu-item>
 
-            <el-menu-item index="" @click="isLoginShow = true" style="float:right;" v-if="!isAuthenticated">登录</el-menu-item>
+            <el-menu-item index="6" @click="isLoginShow = true" style="float:right;" v-if="!isAuthenticated">登录</el-menu-item>
             <el-menu-item index="" style="float:right;padding-right:0;padding-left: 10px;" v-if="isAuthenticated">
                 <span class="el-dropdown-link" @mouseover="openDropMenu">
                     {{ user.nickname }}
@@ -34,9 +34,9 @@
                 </span>
                 <ul class="dropdown-menu" ref="menu" @mouseleave="closeDropMenu">
                     <li class="dropdown-info">
-                        <router-link to="/user/personalInfo">
+                        <router-link to="/setting/userInfo">
                         <div class="dropdown-info-left">
-                            <img :src="avatar" alt =".." class="img-info-circle">
+                            <img :src="avatar" alt =".." class="img-info-circle" >
                         </div>
                         <div class="dropdown-info-right">
                             <p>{{ user.nickname }}</p>
@@ -46,30 +46,30 @@
                         </router-link>
                     </li>
                     <li>
-                        <router-link to="/setting">
+                        <router-link to="/setting/userInfo">
                             <img src="@/assets/svg/header/user.svg" alt="" class="img-left">
                             <span>个人中心</span>
                             <img src="@/assets/svg/header/right.svg" alt="" class="img-right">
                         </router-link>
                     </li>
                     
-                    <li>
+                    <!-- <li>
                         <router-link to="/setting/updateAvatar">
                         <img src="@/assets/svg/header/setting.svg" alt="" class="img-left">
                         <span>资料设置</span>
                         <img src="@/assets/svg/header/right.svg" alt="" class="img-right">
                         </router-link>
-                    </li>
+                    </li> -->
                     
                     
-                    <li>
+                    <li @mouseover="showQRCode" @mouseout="hiddenQRCode">
                         <a href="javascript: void(0)" style="position: relative" class="weixin">
                         <img src="@/assets/svg/header/wechat.svg" alt="" class="img-left">
                         <span>微信公众号</span>
                         <img src="@/assets/svg/header/qrcode.svg" alt="" class="img-right qrcode">
-                        <!-- <div class="qrcode" style="">
-                        <img src="" alt="" style="">
-                        </div> -->
+                        <div class="qrcode" style="" ref="qrcode">
+                        <img src="@/assets/images/qrcode.jpg" alt="" style="">
+                        </div>
                         </a>
                     </li>
                     <li>
@@ -101,29 +101,29 @@
                         </a>
                     </li>
                     <li>
-                        <router-link to="/feedback">
+                        <router-link to="/sundry/feedback">
                         <img src="@/assets/svg/header/send.svg" alt="" class="img-left send">
                         <span>发送反馈</span>
                         <img src="@/assets/svg/header/right.svg" alt="" class="img-right">
                         </router-link>
                     </li>
                     <li>
-                        <router-link target="_blank" to="/help">
+                        <router-link target="_blank" to="/sundry/help">
                         <img src="@/assets/svg/header/help.svg" alt="" class="img-left">
                         <span>帮助</span>
                         <img src="@/assets/svg/header/right.svg" alt="" class="img-right">
                         </router-link>
                     </li>
                     <li>
-                        <router-link target="_blank" to="/sponsor">
+                        <router-link target="_blank" to="/sundry/sponsor">
                         <img src="@/assets/svg/header/sponsor.svg" alt="" class="img-left">
                         <span>赞助</span>
                         <img src="@/assets/svg/header/right.svg" alt="" class="img-right">
                         </router-link>
                     </li>
                     <li role="separator" class="divider"></li>
-                    <li @click="logout">
-                        <a href="#" @click="logout($event)">
+                    <li @click="logout" id="logout">
+                        <a href="#" >
                         <img src="@/assets/svg/header/logout.svg" alt="" class="img-left logout">
                         <span>注销</span>
                         </a>
@@ -132,13 +132,22 @@
             </el-menu-item>
 
             <el-menu-item index="" style="float:right;padding-right:0;" v-if="isAuthenticated">
+                <router-link to='/setting/userInfo'>
                 <img :src="avatar" alt="" class="avatar">
+                </router-link>
+            </el-menu-item>
+
+            <el-menu-item index="" style="float:right;padding-right:0;" v-if="isAuthenticated" class="hidden-sm-and-down">
+                <button class="contributeBtn">
+                    <span @click="goContribute"><i class="el-icon-edit"></i>投稿</span>
+                </button>
             </el-menu-item>
 
             <el-menu-item index="" style="border:none;float:right;" class="hidden-sm-and-down">
                 <el-input
                 placeholder="请输入内容"
-                v-model="search">
+                v-model="search"
+                >
                 <i
                     class="el-icon-search el-input__icon"
                     slot="suffix"
@@ -149,76 +158,150 @@
         </el-menu>
     </el-container>
     
-    <login :isLoginShow=isLoginShow @switchLogin="switchLogin" @closeLogOpenReg="closeLogOpenReg"></login>
-    <register :isRegisterShow=isRegisterShow @switchLogin="switchRegister" @closeRegOpenLog="closeRegOpenLog"></register>
+    <login :isLoginShow=isLoginShow @switchLogin="switchLogin" @closeLogOpenReg="closeLogOpenReg" @closeLogAndReg="closeLogAndReg"></login>
+    <register :isRegisterShow=isRegisterShow @switchRegister="switchRegister" @closeRegOpenLog="closeRegOpenLog" @closeLogAndReg="closeLogAndReg"></register>
   </div>
 </template>
 
 <script>
 import Login from '@/components/Login'
 import Register from '@/components/Register'
-  export default {
-    data() {
-      return {
-        activeIndex: '1',
-        search: '',
-        isLoginShow: false,
-        isRegisterShow: false,
-        isAuthenticated: this.$store.state.isAuthenticated,
-        avatar: 'http://localhost:3006' +  this.$store.state.user.avatar,
-        user: this.$store.state.user,
-        show: true
-      };
-    },
-    methods: {
-        logout() {
-            this.$store.dispatch("clearCurrentState")
-            if (sessionStorage.token ) sessionStorage.removeItem("token");
-            if (localStorage.token ) localStorage.removeItem("token");
-            this.$router.go(0)
+    export default {
+        
+        data() {
+            return {
+                search: '',
+                isLoginShow: false,
+                isRegisterShow: false,
+                show: true
+            };
         },
-        handleIconClick() {
-            console.log(this.search)
-            if ( this.search.trim() == null || this.search.trim() == '' ) {
-                this.$message({
-                    type: 'warning',
-                    message: '请输入搜索内容'
-                })
-                return
+        computed: {
+            isAuthenticated() {
+                // console.log(this.$store.state.isAuthenticated)
+                return this.$store.state.isAuthenticated
+            },
+            user() {
+                return this.$store.state.user
+            },
+            avatar() {
+                // console.log(this.$store.state.user)
+                return 'http://localhost:3006' +  this.$store.state.user.avatar
             }
+        },
+        mounted() {
 
-            window.location.href=`http://localhost:8080/article?type=last&page_index=1&page_size=10&search=${this.search}`;
         },
-        handleSelect(key, keyPath) {
-            // console.log(key, keyPath);
+        methods: {
+            
+            showQRCode() {
+                this.$refs.qrcode.style.display = 'block'
+            },
+            hiddenQRCode() {
+                this.$refs.qrcode.style.display = 'none'
+            },
+            go(path) {
+                this.$router.push({path: path})
+
+            },
+            goContribute() {
+                this.$router.push({path: '/contribution'})
+            },
+            
+            goPage(type) {
+
+                const { href } = this.$router.resolve({
+                    path: '/article',
+                    query: {
+                            type: `${type}`,
+                            page_index: 1,
+                            page_size: 10,
+                            search: 'null'
+                        }
+                })
+                window.open(href, '_blank')
+            },
+           
+            goHome() {
+                this.$router.push({path: '/'})
+            },
+            logout() {
+                // if (sessionStorage.token) sessionStorage.removeItem("token");
+                if (localStorage.token ) localStorage.removeItem("token");
+                this.$store.dispatch('clearCurrentState')
+                this.$message({
+                    type: 'success',
+                    message: '已退出当前账号'
+                })
+                setTimeout(() => {
+                    this.$('.register').click()
+                }, 1);
+                // this.$axios.post('/api/users/logout')
+                //     .then( result => {
+                //         this.$store.dispatch('clearCurrentState')
+                //         this.$message({
+                //             type: 'success',
+                //             message: '已退出当前账号'
+                //         })
+                //         setTimeout(() => {
+                //             this.$('.register').click()
+                //         }, 1200);
+                //     })
+
+                
+            },
+            handleIconClick() {
+                // console.log(this.search)
+                if ( this.search.trim() == null || this.search.trim() == '' ) {
+                    this.$message({
+                        type: 'warning',
+                        message: '请输入搜索内容'
+                    })
+                    return
+                }
+
+                // window.location.href=`http://localhost:8080/#/article?type=last&page_index=1&page_size=10&search=${this.search}`;
+                this.$router.push({path: '/article', query: {
+                    type: 'last',
+                    page_index: 1,
+                    page_size: 10,
+                    search: this.search
+                }})
+            },
+            handleSelect(key, keyPath) {
+                // console.log(key, keyPath);
+            },
+            switchLogin() {
+                this.isLoginShow = !this.isLoginShow
+            },
+            switchRegister() {
+                this.isRegisterShow = !this.isRegisterShow
+            },
+            closeLogOpenReg() {
+                this.isLoginShow = false
+                this.isRegisterShow = true
+            },
+            closeRegOpenLog() {
+                this.isLoginShow = true
+                this.isRegisterShow = false
+            },
+            closeLogAndReg() {
+                this.isLoginShow = false;
+                this.isRegisterShow = false;
+            },
+            openDropMenu() {
+                this.$refs.menu.style.display = "block"
+            },
+            closeDropMenu() {
+                this.$refs.menu.style.display = "none"
+            }
         },
-        switchLogin() {
-            this.isLoginShow = !this.isLoginShow
+        components: {
+            Login,
+            Register
         },
-        switchRegister() {
-            this.isRegisterShow = !this.isRegisterShow
-        },
-        closeLogOpenReg() {
-            this.isLoginShow = false
-            this.isRegisterShow = true
-        },
-        closeRegOpenLog() {
-            this.isLoginShow = true
-            this.isRegisterShow = false
-        },
-        openDropMenu() {
-            this.$refs.menu.style.display = "block"
-        },
-        closeDropMenu() {
-            this.$refs.menu.style.display = "none"
-        }
-    },
-    components: {
-        Login,
-        Register
-    },
-    
-  }
+        
+    }
 </script>
 
 <style lang="scss" scoped>
@@ -226,9 +309,11 @@ import Register from '@/components/Register'
 @media screen and (min-width: 2800px) and (max-width: 3440px) {
     .el-menu-demo {
         padding: 0 20% !important;
+        transition: all 0.3s ease;
     }
     .el-menu-demo {
-      width: 60% !important;
+        width: 60% !important;
+        transition: all 0.3s ease;
     }
     
 }
@@ -236,9 +321,11 @@ import Register from '@/components/Register'
 @media screen and (min-width: 2550px) and (max-width: 2800px) {
     .el-menu-demo {
         padding: 0 15% !important;
+        transition: all 0.3s ease;
     }
     .el-menu-demo {
-      width: 70% !important;
+        width: 70% !important;
+        transition: all 0.3s ease;
     }
     
 }
@@ -249,7 +336,8 @@ import Register from '@/components/Register'
         transition: all 0.3s ease;
     }
     .el-menu-demo {
-      width: 80% !important;
+        width: 80% !important;
+        transition: all 0.3s ease;
     }
     
 }
@@ -260,31 +348,66 @@ import Register from '@/components/Register'
         transition: all 0.3s ease;
     }
     .el-menu-demo {
-      width: 88% !important;
+        width: 88% !important;
+        transition: all 0.3s ease;
     }
     
 }
 
 @media screen and (max-width: 1500px) and  (min-width: 1200px) {
     .el-menu-demo {
-      padding: 0 5% !important;
+        padding: 0 5% !important;
+        transition: all 0.3s ease;
     }
     .el-menu-demo {
-      width: 90% !important;
+        width: 90% !important;
+        transition: all 0.3s ease;
     }
 }
 @media screen and (max-width: 1200px) {
     .el-menu-demo {
-      padding: 0 1% !important;
+        padding: 0 1% !important;
+        transition: all 0.3s ease;
     }
     .el-menu-demo {
-      width: 98% !important;
+        width: 98% !important;
+        transition: all 0.3s ease;
     }
     
 }
+
+@media screen and (max-width: 1200px) and  (min-width: 992px) {
+    .el-menu-demo {
+        padding: 0 3% !important;
+        transition: all 0.3s ease;
+    }
+    .el-menu-demo {
+        width: 94% !important;
+        transition: all 0.3s ease;
+    }
+    
+}
+@media screen and (max-width: 992px) {
+   
+    .el-menu-demo {
+        padding: 0 2% !important;
+        transition: all 0.3s ease;
+    }
+    .el-menu-demo {
+        width: 96% !important;
+        transition: all 0.3s ease;
+    }
+    .dropdown-menu {
+        width: 240px !important;
+        li {
+            a {
+                width: 240px !important;
+            }
+        }
+    }
+}
 .nav-header {
     margin-bottom: 80px;
-    box-shadow: 0 6px 50px rgba(0, 0, 0, 0.054);
 }
 .el-container {
     /* padding: 0 20%; */
@@ -298,15 +421,16 @@ import Register from '@/components/Register'
     padding: 0 10%;
     width:80%;
     height: 60px;
+    box-shadow: 0 6px 30px rgba(236, 236, 236, 0.938);
 }
 .logo {
     width: 100%;
+    margin-left: -10px;
 }
 
 .avatar {
     width: 35px;
     height: 35px;
-    border: 1px solid #7645b8;
     margin-right: 2px;
     border-radius: 50%
 }
@@ -319,46 +443,47 @@ import Register from '@/components/Register'
     top: 61px;
     right: 0px;
     background-color: #fff;
-    height: 600px;
+    height: 560px;
     box-shadow: 0 6px 50px rgba(0, 0, 0, 0.144);
     border-radius: 4px;
-    overflow: hidden;
+    // overflow: hidden;
     li:hover {
         background-color: #eee;
     }
     li:first-child:hover {
         background-color: #fafafa;
-        
         transition: all .5s ease;
         
     }
     li:last-child:hover {
         background-color: #fff;
+        
     }
     li {
         margin: 6px 0;
         height: 40px;
         a {
+            display: block;
+            width: 300px;
+            height: 40px;
             border: 0;
             margin: 0 auto;
-            padding: 4px 0;
+            // padding: 4px 0;
             color: #333 !important;
             line-height: 40px;
-            padding: 0 26px;
             text-align: left;
             font-size: 16px;
             span {
                 color: #333 !important;
                 font-size: 16px;
                 float: left;
-                margin-top: 6px; 
             }
             .img-left {
                 width: 30px;
                 height: 30px;
                 vertical-align: -10px;
                 float: left;
-                margin-top: 4px; 
+                margin-top: 6px; 
                 margin-right: 15px;
                 margin-left: 20px;
             }
@@ -373,7 +498,7 @@ import Register from '@/components/Register'
                 width: 24px;
                 height: 24px;
                 float: right;
-                margin-top: 12px; 
+                margin-top: 8px; 
                 margin-right: 20px;
             }
             .logout {
@@ -403,6 +528,7 @@ import Register from '@/components/Register'
                 margin-right: 10px;
             }
         }
+        
     }
     
     .divider {
@@ -431,12 +557,13 @@ import Register from '@/components/Register'
             font-size: 16px;
             .dropdown-info-left {
                 position: absolute;
-                left: 20px;
+                left: 15px;
                 top: 16px;
+                width: 48px;
+                height: 48px;
                 .img-info-circle {
                     width: 48px;
                     height: 48px;
-                    border: 1px solid rgba(0, 0, 0, 0.445);
                     border-radius: 50%;
                 }
             }
@@ -466,5 +593,49 @@ import Register from '@/components/Register'
 }
 .el-menu--horizontal .el-menu-item.is-active {
     border-bottom: 0 !important; 
+    color: #909399;
 }
+.el-menu--horizontal .el-menu-item:hover, el-submenu:hover {
+    color: #409EFF;
+}
+.contributeBtn {
+    border: 0;
+    margin-top: 4px;
+    height: 38px;
+    width: 76px;
+    background-color: #409EFF;
+    border-radius: 4px;
+    cursor: pointer;
+    span {
+        color: #fff;
+        margin-left: -6px;
+    }
+}
+.el-icon-edit {
+    color: #fff;
+    margin-left: -3px;
+    vertical-align: -1px;
+}
+
+div.qrcode {
+    display: none;
+    position: absolute;
+    top: -10px;
+    left: -152px;
+    width: 150px;
+    height: 165px;
+    border-radius: 4px;
+    img {
+        width: 150px;
+        height: 165px;
+        border-radius: 4px;
+        border: 1px solid #eee;
+    }
+}
+
+
+
+
+
+
 </style>

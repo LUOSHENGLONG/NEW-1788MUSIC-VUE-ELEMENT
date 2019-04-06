@@ -1,0 +1,5 @@
+INSERT INTO `encrypted` VALUES (0000000001, '你最好的朋友叫什么名字');
+INSERT INTO `encrypted` VALUES (0000000002, '你的小学母校叫什么名字');
+INSERT INTO `encrypted` VALUES (0000000003, '你的中学母校叫什么名字');
+INSERT INTO `encrypted` VALUES (0000000004, '你的母亲叫什么名字');
+INSERT INTO `encrypted` VALUES (0000000005, '你的父亲叫什么名字');

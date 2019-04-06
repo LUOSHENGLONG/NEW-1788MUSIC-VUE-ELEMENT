@@ -15,7 +15,7 @@
                 <router-link :to="'/articleInfo/'+item.id"  target="_blank">
                 <el-card :body-style="{ padding: '0px' }">
                 <div class="image-wrap"> 
-                    <img v-lazy="'http://localhost:3006'+item.img" class="image">
+                    <img v-lazy="'http://localhost:3006'+ (item.img == 'null' ? '/contribute/1788MUSIC.png':item.img)" class="image">
                     <div class="gradient"></div>
                     <span class="time">{{ item.releaseTime | dateFormat }}</span>
                 </div>
@@ -32,6 +32,8 @@
             </router-link>
             </el-col>
         </el-row>
+
+        
     </el-row>
     
 </template>
@@ -88,7 +90,7 @@ export default {
     }
     
 }
-@media screen and (max-width: 1200px) {
+@media screen and (max-width: 1200px) and (min-width: 992px) {
     .card-col {
         width: 32.5% !important;
     }
@@ -97,7 +99,15 @@ export default {
     }
     
 }
-
+@media screen and (max-width: 992px) and (min-width: 400px) {
+  .card-col {
+        width: 49% !important;
+    }
+    .el-col:nth-child(2), .el-col:nth-child(4), .el-col:nth-child(6) {
+        margin-right: 0 !important;
+    }
+  
+}
 
 .title {
     border-bottom: 2px solid #eee;
@@ -105,14 +115,18 @@ export default {
     height: 80px;
     line-height: 80px;
     .title-type {
-        height: 40px;;
+        height: 32px;;
         line-height: 35px;
         margin: 0;
-        margin-top: 40px;
-        font-size: 26px;
+        margin-top: 48px;
+        font-weight: 700;
         color: #555;
         border-bottom: 2px solid #409EFF;
         float: left;
+        
+        span {
+            
+        }
     }
     
 }
@@ -122,17 +136,18 @@ export default {
 }
 
 .description {
+    
     font-size: 16px;
     color: #999;
-    line-height: 20px;
+    line-height: 1.4;
     margin: 0;
     word-wrap: break-word;
     word-break: break-all;
 }
 
 .bottom {
-margin-top: 13px;
-line-height: 12px;
+    margin-top: 8px;
+    line-height: 12px;
 }
 
 .button {
@@ -145,7 +160,7 @@ float: right;
     overflow: hidden;
     text-align: center;
     height: 180px;
-    background-image: url(../assets/images/favicon.png);
+    // background-image: url(../assets/images/favicon.png);
     background-size: 10%;
     background-repeat: no-repeat;
     background-position-x: 96%;
@@ -208,7 +223,6 @@ float: right;
     font-size: 20px;
     word-wrap: break-word;
     word-break: break-all;
-    font-size: 20px;
     font-weight: bold;
     
 }
@@ -219,15 +233,19 @@ float: right;
     margin-top: 45px;
     line-height: 30px;
     float: right;
-    background: #337ab7;
+    background: -webkit-linear-gradient(left, #6b11cbb6 ,#2575fc); 
+    background: -o-linear-gradient(right, #6b11cbb6, #2575fc); 
+    background: -moz-linear-gradient(right, #6b11cbb6, #2575fc); 
+    background: linear-gradient(to right, #6b11cbb6 ,#2575fc); 
     padding: 0px 12px;
     border-radius: 80px;
     text-decoration: none;
 }
 
 .el-card:hover {
-    margin-top: -5px;
+    margin-top: -6px;
     background: #fff;
+    box-shadow: 0 10px 20px 0 #653a9e1f;
     transition: all 0.3s ease;
     .image-wrap .image {
         transform: scale(1.2);
@@ -243,6 +261,7 @@ float: right;
     }
     .text-gradient {
         background-image: -webkit-linear-gradient(top, rgba(255, 255, 255, 0) 10%, white 85%);
+        bottom: 5px;
         transition: all 0.5s ease;
     }
     .content {
@@ -270,6 +289,19 @@ float: right;
 .type-box {
     margin-bottom: 20px;
 
+}
+
+.ad {
+    width: 100%;
+    height: 120px;
+    .left {
+        display: inline-block;
+        width: 49%;
+    }
+    .right {
+        display: inline-block;
+        width: 49%;
+    }
 }
 
 </style>

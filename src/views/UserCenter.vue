@@ -10,38 +10,41 @@
             <div class="main-content">
                 <el-tabs type="border-card">
                     <el-tab-pane>
-                        <span slot="label"><i class="el-icon-date"></i>个人中心</span>
+                        <span slot="label"><i class="el-icon-menu"></i> &nbsp;&nbsp;个人中心</span>
                         <div class="user-left">
                             <el-menu default-active="1" class="el-menu-vertical-demo" @open="handleOpen" @close="handleClose" :collapse="isCollapse">
                                 
-                                <el-menu-item index="1" @click="showUserInfo">
-                                    <i class="el-icon-menu"></i>
-                                    <span slot="title">导航二</span>
+                                <el-menu-item index="1" id="userInfo" @click="showUserInfo">
+                                    <i class="el-icon-date"></i>
+                                    <span slot="title">个人信息</span>
                                 </el-menu-item>
                                 
-                                <el-menu-item index="4" @click="showFavorite">
-                                    <i class="el-icon-setting"></i>
-                                    <span slot="title">导航四</span>
+                                <el-menu-item index="2" id="favorite" @click="showFavorite">
+                                    <i class="el-icon-star-on"></i>
+                                    <span slot="title">我的收藏</span>
+                                </el-menu-item>
+
+                                <el-menu-item index="3" id="contribute" @click="showContribute">
+                                    <i class="el-icon-edit-outline"></i>
+                                    <span slot="title">我的投稿</span>
+                                </el-menu-item>
+                                <el-menu-item index="4" id="contribute" @click="showAvatar">
+                                    <i class="el-icon-edit-outline"></i>
+                                    <span slot="title">我的投稿</span>
                                 </el-menu-item>
                             </el-menu>
+                            <img src="@/assets/images/favicon.png" class="favicon" alt="">
                         </div>
                         <div class="line"></div>
                         <div class="user-right" ref="userInfo">
                             <user-info-box></user-info-box>
                         </div>
-                        <div class="user-right" ref="favorite">
-                            <source-box :articleData=articleData :isOk=isOk></source-box>
-                            <pagination-box 
-                                @handleSize=handleSize
-                                @handleCurrent=handleCurrent
-                                :paginations=paginations>
-                            </pagination-box>
-                        </div>
+                        
 
                     </el-tab-pane>
-                    <el-tab-pane label="消息中心">消息中心</el-tab-pane>
+                    <!-- <el-tab-pane label="消息中心">消息中心</el-tab-pane>
                     <el-tab-pane label="角色管理">角色管理</el-tab-pane>
-                    <el-tab-pane label="定时任务补偿">定时任务补偿</el-tab-pane>
+                    <el-tab-pane label="定时任务补偿">定时任务补偿</el-tab-pane> -->
                 </el-tabs>
             </div>
         </div>
@@ -60,6 +63,7 @@ import BreakBox from '@/components/BreakBox'
 import PaginationBox from '@/components/PaginationBox'
 import ToTopBox from '@/components/ToTopBox'
 import UserInfoBox from '@/components/UserInfoBox'
+import ContributeBox from '@/components/ContributeBox'
 
 
 export default {
@@ -72,19 +76,13 @@ export default {
         BreakBox,
         PaginationBox,
         ToTopBox,
-        UserInfoBox
+        UserInfoBox,
+        ContributeBox
     },
     data() {
         return {
             height: '200px',
-            // 需要给分页组件传递的信息
-            paginations: {
-                page_index: 1, // 当前页
-                totalCount: 0, // 总数
-                page_size: 5, // 一页显示条数
-                page_sizes: [10, 15, 20], // 每页显示条数控制
-                layout: "total, sizes, prev, pager, next, jumper"
-            },
+            
             articleData: [],
             isOk: false,
             isShow: false,
@@ -109,32 +107,108 @@ export default {
                 page_index: 1, // 当前页
                 totalCount: 0, // 总数
                 page_size: 5, // 一页显示条数
+                page_sizes: [5, 10, 15], // 每页显示条数控制
+                layout: "total, sizes, prev, pager, next, jumper"
+            },
+            Contpaginations: {
+                page_index: 1, // 当前页
+                totalCount: 0, // 总数
+                page_size: 10, // 一页显示条数
                 page_sizes: [10, 15, 20], // 每页显示条数控制
                 layout: "total, sizes, prev, pager, next, jumper"
             },
+            contributeData: []
         }
     },
     mounted() {
         // 设置分页数据
-        if(this.$route.query.page_index) 
-        this.paginations.page_index = parseInt(this.$route.query.page_index);
-
-        if(this.$route.query.page_size) 
-        this.paginations.page_size = parseInt(this.$route.query.page_size);
+        
 
         this.getArticleData()
         
-        this.showUserInfo()
+        // this.showUserInfo()
+        // document.getElementById('userInfo').classList.remove('is-active')
+        // document.getElementById('favorite').classList.add('is-active')
+        // // this.showFavorite()
+        // this.$route.params.type
+
+        this.showWitch()
     },
     methods: {
+        showWitch() {
+            const type = this.$route.params.type
+            if( type == 'favorite') {
+                document.getElementById('favorite').classList.add('is-active')
+                document.getElementById('userInfo').classList.remove('is-active')
+                document.getElementById('contribute').classList.remove('is-active')
+                this.showFavorite()
+            } else if ( type == 'userInfo' ) {
+                document.getElementById('userInfo').classList.add('is-active')
+                document.getElementById('favorite').classList.remove('is-active')
+                document.getElementById('contribute').classList.remove('is-active')
+                this.showUserInfo()
+            } else if ( type == 'contribute' ) {
+                document.getElementById('contribute').classList.add('is-active')
+                document.getElementById('userInfo').classList.remove('is-active')
+                document.getElementById('favorite').classList.remove('is-active')
+                this.showContribute()
+            } else {
+                document.getElementById('userInfo').classList.add('is-active')
+                document.getElementById('contribute').classList.remove('is-active')
+                document.getElementById('favorite').classList.remove('is-active')
+                this.showUserInfo()
+            }
+        },
+        showContribute() {
+            this.$refs.contribute.style.display = "inline-block"
+            this.$refs.userInfo.style.display = "none"
+            this.$refs.favorite.style.display = "none"
+            console.log(111)
+            this.getContribute()
+        },
+        getContribute() {
+            this.isOk = false
+            this.$axios.post('/api/users/getContribute',
+            {
+                id: this.$store.state.user.id,
+                pageIndex: 1,
+                pageSize: 10,
+            }).then(result => {
+                // 每次获取数据回到顶部
+                this.toTop()
+                const { code, msg, data, totalCount } = result.data
+                if ( code === 0 ) {
+                    this.isOk = false
+                    this.$message.error(msg)
+                    return
+                }
+
+                if ( code === 1 ) {
+                    this.isOk = true
+                    this.contributeData = data
+                    this.Contpaginations.totalCount = parseInt(totalCount)
+                    setTimeout(() => {
+                        this.isOk = true
+                    }, 1);
+                }
+                console.log(code)
+                console.log(msg)
+                console.log(data)
+                console.log(totalCount)
+            })
+        },
         showUserInfo() {
-            this.showChild.userInfo = true
+            // this.showChild.userInfo = true
             this.$refs.userInfo.style.display = "inline-block"
+            this.$refs.contribute.style.display = "none"
             this.$refs.favorite.style.display = "none"
         },
         showFavorite() {
-            this.$refs.userInfo.style.display = "none"
             this.$refs.favorite.style.display = "inline-block"
+            this.$refs.userInfo.style.display = "none"
+            this.$refs.contribute.style.display = "none"
+        },
+        showAvatar() {
 
         },
         handleOpen() {
@@ -146,36 +220,32 @@ export default {
         toTop() {
             window.scrollTo(0, 0)
         },
-        // 处理分页大小
+        // 处理分页大小 投稿
+        ContHandleSize(size) {
+            console.log(size)
+            this.Contpaginations.page_size = size
+            this.getContribute()
+
+        },
+        // 处理分页换页 投稿
+        ContHandleCurrent(page_index) {
+            console.log(page_index)
+            this.Contpaginations.page_index = page_index
+           this.getContribute()
+            
+        },
+        // 处理分页大小 收藏
         handleSize(size) {
             console.log(size)
             this.paginations.page_size = size
-            this.$router.push(
-                {
-                    path: `article`,
-                    query: {
-                        type: this.$route.query.type,
-                        page_index: size,
-                        page_size: this.paginations.page_size,
-                        search: this.$route.query.search
-                    }
-                })
+            this.getArticleData()
 
         },
-        // 处理分页换页
+        // 处理分页换页 收藏
         handleCurrent(page_index) {
             console.log(page_index)
             this.paginations.page_index = page_index
-            this.$router.push(
-                {
-                    path: `article`,
-                    query: {
-                        type: this.$route.query.type,
-                        page_index: page_index,
-                        page_size: this.paginations.page_size,
-                        search: this.$route.query.search
-                    }
-                })
+           this.getArticleData()
             
         },
         getArticleData() {
@@ -224,8 +294,12 @@ export default {
                 }
 
                 if ( code === 1 ) {
+                    this.isOk = false
                     this.articleData = data
                     this.paginations.totalCount = parseInt(totalCount)
+                    setTimeout(() => {
+                        this.isOk = true
+                    }, 1);
                 }
                 
             })
@@ -312,12 +386,14 @@ export default {
     
 }
 
+
+
 .content {
     padding: 0 10%;
     min-width: 992px;
-    
+    background-color: #fff;
+    margin-top: 100px;
     .main-content {
-        
         .user-left {
             float: left;
             width: 20%;
@@ -376,6 +452,16 @@ export default {
     background-color: #eee;
     height: 96%;
     box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.1);
+}
+
+.el-tab-pane {
+    padding: 30px 0;
+}
+
+.favicon {
+    width: 96px;
+    height: 96px;
+    margin-top: 250px;
 }
 </style>
 
